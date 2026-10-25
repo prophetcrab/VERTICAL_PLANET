@@ -1,0 +1,22 @@
+# Build artifacts and capture caches are not part of the repository.
+__pycache__/
+*.pyc
+
+# The page->server capture pipeline writes thousands of intermediate frames.
+src/test/
+src/film_frames/
+src/film_clean/
+src/shots/
+src/verify/
+
+# Local build output copies (the canonical single-file build lives in dist/).
+src/index.html
+# Assemble.py output; regenerate with `python assemble.py`.
+src/city.js
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
