@@ -13,6 +13,10 @@ src/verify/
 src/index.html
 # Assemble.py output; regenerate with `python assemble.py`.
 src/city.js
+# Intermediates from tools/score.py and tools/film.py; the encoded deliverable
+# (dist/*.m4a, dist/*.mp4) is what gets committed.
+tools/*.wav
+tools/_decoded.wav
 
 # Editor / OS noise
 .vscode/

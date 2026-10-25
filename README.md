@@ -14,7 +14,8 @@ HTML 里，双击即可打开。
 | 文件 | 说明 |
 | --- | --- |
 | [`dist/垂城-VERTICAL_PLANET.html`](dist/垂城-VERTICAL_PLANET.html) | 可自由漫游的城市（约 950 KB，离线单文件） |
-| [`dist/垂城-城市宣传片_VERTICAL_PLANET.mp4`](dist/垂城-城市宣传片_VERTICAL_PLANET.mp4) | 60 秒宣传片，1920×1080 / 24 fps / H.264 |
+| [`dist/垂城-城市宣传片_VERTICAL_PLANET.mp4`](dist/垂城-城市宣传片_VERTICAL_PLANET.mp4) | 60 秒宣传片，1920×1080 / 24 fps / H.264 + AAC 配乐 |
+| [`dist/垂城-城市宣传片_BGM_60s.m4a`](dist/垂城-城市宣传片_BGM_60s.m4a) | 同款配乐单独成轨（AAC 256 kbps），可复用 |
 
 > 宣传片约 81 MB，已直接放在仓库中；若你只想看城市，下载 HTML 即可。
 
@@ -124,6 +125,22 @@ Three.js 已放在 `src/vendor/three.min.js`，构建不需要联网。
 渲染流程：页面内的电影模式按固定时间轴逐帧绘制 1920×1080，用
 `gl.finish()` + 2D 画布快照稳定抓帧后回传本地服务，Python 合成遮幅与字幕，
 最后由 ffmpeg 以 CRF 17 / H.264 High 编码。
+
+### 配乐
+
+配乐是为这支片子**原创合成**的，没有采样任何现成录音，因此随片自由使用。
+它按剪辑网格写作：D 小调持续低音起于行星镜头，工业脉冲正好落在切入机舱层的
+硬切上；此后每一次硬切都由冲击、上升音或织体变化标记。
+
+`tools/score.py` 用 numpy 与 scipy 逐样本合成全部素材：次低音 drone、
+失谐加法合成 pad、非谐波金属打击、带通噪声气流、FM 钟声，以及一段用合成
+脉冲响应做的混凝土大厅混响。可复现（固定随机种子）。
+
+```bash
+python tools/score.py tools/score_60s.wav          # 生成配乐
+# 合入画面（保留原视频流，仅添加音轨）
+ffmpeg -i dist/垂城-城市宣传片_VERTICAL_PLANET.mp4 -i tools/score_60s.wav   -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 256k -shortest   -movflags +faststart out.mp4
+```
 
 全片 1,440 帧都经过客观门禁扫描：只命中片头与片尾约 0.6 秒的设计性淡入淡出，
 主体镜头无遮挡、无撕裂。
